@@ -1,0 +1,212 @@
+/*
+ * SupplementStore – Custom CSS
+ * All styles that cannot be expressed with Tailwind utility classes live here.
+ * Tailwind CDN is loaded in the layout; this file is linked after it.
+ */
+
+/* ── Fonts ──────────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;900&display=swap');
+
+body {
+    font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
+}
+
+/* ── Brand Gradients ─────────────────────────────────────────────────────────
+   Replace: style="background:linear-gradient(135deg,#0f2027 0%,#1a4731 50%,#0f2027 100%)"
+            style="background:linear-gradient(135deg,#1da851,#25D366)"
+            style="background:linear-gradient(to right,#4ade80,#22d3ee)"
+            style="background:#25D366"
+────────────────────────────────────────────────────────────────────────────── */
+.bg-hero {
+    background: linear-gradient(135deg, #0f2027 0%, #1a4731 50%, #0f2027 100%);
+}
+
+.bg-whatsapp-gradient {
+    background: linear-gradient(135deg, #1da851, #25D366);
+}
+
+.bg-whatsapp {
+    background: #25D366;
+}
+
+.text-gradient-green-cyan {
+    background: linear-gradient(to right, #4ade80, #22d3ee);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ── Admin Layout ────────────────────────────────────────────────────────────
+   Replace: style="background:linear-gradient(135deg,#0f2027,#1a4731)"
+────────────────────────────────────────────────────────────────────────────── */
+.bg-admin-sidebar {
+    background: linear-gradient(135deg, #0f2027, #1a4731);
+}
+
+/* ── Admin Login Header ──────────────────────────────────────────────────────
+   Replace: style="background-image: linear-gradient(to right, ...)"
+────────────────────────────────────────────────────────────────────────────── */
+.bg-admin-header {
+    background: linear-gradient(to right, #15803d, #14532d);
+}
+
+/* ── Product card hero blur circles ─────────────────────────────────────────
+   Replace: style="background:linear-gradient(to right,#4ade80,#22d3ee)" on circle divs
+────────────────────────────────────────────────────────────────────────────── */
+.blur-circle-green {
+    background: rgba(74, 222, 128, 0.2);
+}
+
+.blur-circle-cyan {
+    background: rgba(34, 211, 238, 0.2);
+}
+
+/* ── Hero decorative circles (product show page) ─────────────────────────── */
+.hero-circle-outer {
+    background: linear-gradient(135deg, rgba(74,222,128,0.2), rgba(34,211,238,0.2));
+    border: 1px solid rgba(74,222,128,0.3);
+}
+
+.hero-circle-inner {
+    background: linear-gradient(135deg, rgba(74,222,128,0.3), rgba(34,211,238,0.3));
+    border: 1px solid rgba(74,222,128,0.2);
+}
+
+/* ── WhatsApp Button ─────────────────────────────────────────────────────────
+   Replace: style="background:#25D366" on anchor/button elements
+────────────────────────────────────────────────────────────────────────────── */
+.btn-whatsapp {
+    background: #25D366;
+    color: #ffffff;
+    transition: background 0.2s ease;
+}
+.btn-whatsapp:hover {
+    background: #1ebe5d;
+}
+
+.btn-whatsapp-lg {
+    background: linear-gradient(135deg, #1da851, #25D366);
+    color: #ffffff;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+.btn-whatsapp-lg:hover {
+    background: linear-gradient(135deg, #1a9648, #1ebe5d);
+    transform: scale(1.05);
+}
+
+/* ── User avatar gradient ────────────────────────────────────────────────────
+   Replace: style="background:linear-gradient(to bottom right, #4ade80, #06b6d4)"
+────────────────────────────────────────────────────────────────────────────── */
+.avatar-gradient {
+    background: linear-gradient(135deg, #4ade80, #06b6d4);
+}
+
+/* ── Scrollbar (nice thin scrollbar for admin sidebar) ───────────────────── */
+.admin-sidebar-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+.admin-sidebar-scroll::-webkit-scrollbar { width: 4px; }
+.admin-sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+.admin-sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+
+/* ── Email template (not Tailwind-based, standalone) ────────────────────────
+   These only apply inside emails/order_placed.blade.php
+────────────────────────────────────────────────────────────────────────────── */
+.email-wrap {
+    font-family: Tahoma, Arial, sans-serif;
+    background: #f8fafc;
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+}
+.email-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+}
+.email-header {
+    background: linear-gradient(135deg, #16a34a, #166534);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+.email-header h1 { margin: 0; font-size: 24px; }
+.email-body { padding: 30px; }
+.email-info-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+}
+.email-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 14px;
+}
+.email-row:last-child { border-bottom: none; }
+.email-row-total { font-weight: bold; font-size: 16px; color: #16a34a; padding-top: 12px; }
+.email-address-box {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+}
+.email-btn {
+    display: inline-block;
+    background: #16a34a;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 20px 0;
+}
+.email-badge {
+    display: inline-block;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+.email-footer {
+    background: #f9fafb;
+    padding: 20px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+/* ── Dynamic width helper (used where CSS variable approach is needed) ───── */
+[data-width] {
+    width: attr(data-width);
+}
+
+/* ── Line clamp utilities (not in older Tailwind CDN) ───────────────────── */
+.line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+.line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+/* ── RTL / LTR input helpers ─────────────────────────────────────────────── */
+.input-ltr { direction: ltr; }
+.input-rtl { direction: rtl; }
