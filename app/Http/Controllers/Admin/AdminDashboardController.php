@@ -22,7 +22,7 @@ class AdminDashboardController extends Controller
         $topProducts   = Product::withCount('orderItems')->orderBy('order_items_count', 'desc')->take(5)->get();
 
         $monthlyRevenue = Order::where('payment_status', 'paid')
-            ->selectRaw("strftime('%Y-%m', created_at) as month, SUM(total) as revenue, COUNT(*) as count")
+            ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as month, SUM(total) as revenue, COUNT(*) as count")
             ->groupBy('month')
             ->orderBy('month', 'desc')
             ->take(6)
