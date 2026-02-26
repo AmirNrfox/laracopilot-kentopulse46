@@ -103,8 +103,7 @@
         </main>
 
         <footer class="text-center text-xs text-gray-400 py-4 border-t">
-            © {{ date('Y') }} فروشگاه مکمل ورزشی — Made with ❤️ by
-            <a href="https://laracopilot.com" target="_blank" class="text-green-600 hover:underline">LaraCopilot</a>
+            © {{ date('Y') }} فروشگاه مکمل ورزشی
         </footer>
     </div>
 </div>
