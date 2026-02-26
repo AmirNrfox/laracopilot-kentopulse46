@@ -7,7 +7,7 @@
 @section('schema_markup')
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
+  "@@context": "https://schema.org",
   "@type": "WebSite",
   "name": "{{ app()->getLocale() === 'fa' ? \App\Models\Setting::get('site_name_fa','فروشگاه مکمل') : \App\Models\Setting::get('site_name_en','Supplement Store') }}",
   "url": "{{ url('/') }}",
@@ -27,7 +27,7 @@
 {{-- Replaced: style="background:linear-gradient(135deg,#0f2027 0%,#1a4731 50%,#0f2027 100%)" → .bg-hero --}}
 <section class="bg-hero relative overflow-hidden">
     <div class="absolute inset-0 opacity-10 pointer-events-none">
-        {{-- Replaced: style="background:rgba(74,222,128,...) / rgba(34,211,238,...)" → Tailwind bg-green-400/20 --}}
+        {{-- Replaced: style="background:rgba(74,222,128,...) / rgba(34,211,238,... )" → Tailwind bg-green-400/20 --}}
         <div class="absolute top-20 w-72 h-72 bg-green-400/20 rounded-full filter blur-3xl {{ $isFa ? 'left-10' : 'right-10' }}"></div>
         <div class="absolute bottom-10 w-96 h-96 bg-blue-400/20 rounded-full filter blur-3xl {{ $isFa ? 'right-10' : 'left-10' }}"></div>
     </div>
@@ -77,7 +77,7 @@
             </div>
             <div class="hidden lg:flex justify-center">
                 <div class="relative">
-                    {{-- Replaced: style="background:linear-gradient(...)" on decorative circles → .hero-circle-outer / .hero-circle-inner --}}
+                    {{-- Replaced: style="background:linear-gradient(... )" on decorative circles → .hero-circle-outer / .hero-circle-inner --}} 
                     <div class="hero-circle-outer w-80 h-80 rounded-full flex items-center justify-center">
                         <div class="hero-circle-inner w-60 h-60 rounded-full flex items-center justify-center">
                             <span class="text-9xl">💪</span>
