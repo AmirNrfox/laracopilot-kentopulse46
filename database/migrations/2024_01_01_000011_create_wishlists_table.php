@@ -8,17 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('product_images', function (Blueprint $table) {
+        Schema::create('wishlists', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->string('image');
-            $table->integer('sort_order')->default(0);
+            $table->unsignedBigInteger('user_id')->nullable()->index();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->string('session_id')->nullable()->index();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('product_images');
+        Schema::dropIfExists('wishlists');
     }
 };

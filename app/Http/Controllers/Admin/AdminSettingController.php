@@ -8,23 +8,14 @@ use Illuminate\Http\Request;
 
 class AdminSettingController extends Controller
 {
-    private function checkAuth()
-    {
-        if (!session('admin_logged_in')) return redirect()->route('admin.login');
-        return null;
-    }
-
     public function index()
     {
-        if ($r = $this->checkAuth()) return $r;
         $settings = Setting::all()->pluck('value', 'key');
         return view('admin.settings.index', compact('settings'));
     }
 
     public function update(Request $request)
     {
-        if ($r = $this->checkAuth()) return $r;
-
         $textFields = [
             'site_name_fa', 'site_name_en', 'site_email', 'site_phone',
             'site_address_fa', 'site_address_en',
@@ -44,7 +35,6 @@ class AdminSettingController extends Controller
             }
         }
 
-        // Boolean toggles
         Setting::set('payment_enabled', $request->has('payment_enabled') ? '1' : '0');
         Setting::set('zarinpal_sandbox', $request->has('zarinpal_sandbox') ? '1' : '0');
 

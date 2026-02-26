@@ -6,25 +6,33 @@
     $pEnabled = $paymentEnabled ?? \App\Models\Setting::get('payment_enabled', '1');
     $wNumber  = $whatsappNumber  ?? \App\Models\Setting::get('whatsapp_number', '989123456789');
 @endphp
-<div class="bg-white rounded-2xl shadow hover:shadow-xl transition-all duration-300 overflow-hidden group border border-transparent hover:border-green-100 flex flex-col">
+<div class="product-card group relative bg-white rounded-2xl shadow hover:shadow-2xl transition-all duration-500 overflow-hidden border border-transparent hover:border-green-200 hover:-translate-y-1 flex flex-col">
+
+    {{-- Quick Actions Overlay --}}
+    <div class="absolute top-3 {{ $isFa ? 'right' : 'left' }}-3 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0">
+        @livewire('wishlist-button', ['productId' => $product->id], key('wb-' . $product->id))
+    </div>
 
     {{-- Image --}}
     <div class="relative overflow-hidden bg-gray-50 h-52 flex-shrink-0">
         <a href="{{ route('products.show', $product->slug) }}">
             <img src="{{ $product->image_url }}"
                  alt="{{ $name }}"
-                 class="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-300"
+                 class="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-110"
                  loading="lazy"
                  onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\'%3E%3Crect fill=\'%23f3f4f6\' width=\'200\' height=\'200\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' font-size=\'60\'%3E%F0%9F%92%AA%3C/text%3E%3C/svg%3E'">
         </a>
+
+        {{-- Discount Badge --}}
         @if($product->sale_price)
-        <div class="absolute top-3 {{ $isFa ? 'right' : 'left' }}-3 bg-red-500 text-white text-xs font-black px-2 py-1 rounded-full">
+        <div class="absolute top-3 {{ $isFa ? 'left' : 'right' }}-3 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-black px-2.5 py-1 rounded-full shadow-sm">
             %{{ round((($product->price - $product->sale_price) / $product->price) * 100) }} {{ $isFa ? 'تخفیف' : 'OFF' }}
         </div>
-        @endif
-        @if($product->featured)
+        @elseif($product->featured)
         <div class="absolute top-3 {{ $isFa ? 'left' : 'right' }}-3 bg-yellow-400 text-gray-900 text-xs font-black px-2 py-1 rounded-full">⭐</div>
         @endif
+
+        {{-- Out of stock overlay --}}
         @if($product->stock <= 0)
         <div class="absolute inset-0 bg-white/80 flex items-center justify-center">
             <span class="bg-gray-500 text-white px-3 py-1 rounded-full text-sm font-bold">{{ $isFa ? 'ناموجود' : 'Out of Stock' }}</span>
@@ -43,6 +51,19 @@
         @if($short)
         <p class="text-gray-400 text-xs mb-3 line-clamp-1">{{ $short }}</p>
         @endif
+
+        {{-- Rating --}}
+        @if($product->reviews->count())
+        <div class="flex items-center gap-1 mb-2">
+            <div class="flex text-yellow-400 text-xs">
+                @for($i = 1; $i <= 5; $i++)
+                    <span>{{ $i <= round($product->average_rating) ? '★' : '☆' }}</span>
+                @endfor
+            </div>
+            <span class="text-gray-400 text-xs">({{ $product->reviews->count() }})</span>
+        </div>
+        @endif
+
         <div class="mt-auto flex items-end justify-between">
             <div>
                 @if($product->sale_price)
@@ -55,11 +76,10 @@
             @if($product->stock > 0)
                 @if($pEnabled)
                 <button onclick="Livewire.dispatch('addQuick', { productId: {{ $product->id }} })"
-                    class="bg-green-500 hover:bg-green-600 text-white text-xs font-bold py-2 px-3 rounded-xl transition-all duration-200 hover:scale-105 flex items-center gap-1">
+                    class="bg-green-500 hover:bg-green-600 text-white text-xs font-bold py-2 px-3 rounded-xl transition-all duration-200 hover:scale-105 flex items-center gap-1 shadow-sm">
                     🛒 {{ $isFa ? 'افزودن' : 'Add' }}
                 </button>
                 @else
-                {{-- Replaced: style="background:#25D366" → .btn-whatsapp --}}
                 <a href="https://wa.me/{{ $wNumber }}?text={{ urlencode($isFa ? 'سلام، می‌خواهم ' . $product->name_fa . ' را سفارش دهم' : 'Hello, I want to order ' . $product->name_en) }}"
                    target="_blank"
                    class="btn-whatsapp text-xs font-bold py-2 px-3 rounded-xl flex items-center gap-1">

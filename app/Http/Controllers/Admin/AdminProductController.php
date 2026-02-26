@@ -13,30 +13,20 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminProductController extends Controller
 {
-    private function checkAuth()
-    {
-        if (!session('admin_logged_in')) return redirect()->route('admin.login');
-        return null;
-    }
-
     public function index()
     {
-        if ($r = $this->checkAuth()) return $r;
         $products = Product::with('category')->orderBy('created_at', 'desc')->paginate(20);
         return view('admin.products.index', compact('products'));
     }
 
     public function create()
     {
-        if ($r = $this->checkAuth()) return $r;
         $categories = Category::where('active', true)->get();
         return view('admin.products.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        if ($r = $this->checkAuth()) return $r;
-
         $data = $request->validate([
             'name_fa'              => 'required|string|max:255',
             'name_en'              => 'required|string|max:255',
@@ -51,7 +41,7 @@ class AdminProductController extends Controller
             'description_en'       => 'nullable|string',
             'short_description_fa' => 'nullable|string|max:500',
             'short_description_en' => 'nullable|string|max:500',
-            'main_image'           => 'nullable|image|max:2048',
+            'main_image'           => 'nullable|image|mimes:jpeg,png,webp,gif|max:2048',
             'meta_title'           => 'nullable|string|max:255',
             'meta_description'     => 'nullable|string|max:500',
         ]);
@@ -95,7 +85,6 @@ class AdminProductController extends Controller
 
     public function edit($id)
     {
-        if ($r = $this->checkAuth()) return $r;
         $product    = Product::with(['images', 'variants'])->findOrFail($id);
         $categories = Category::where('active', true)->get();
         return view('admin.products.edit', compact('product', 'categories'));
@@ -103,7 +92,6 @@ class AdminProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        if ($r = $this->checkAuth()) return $r;
         $product = Product::findOrFail($id);
 
         $data = $request->validate([
@@ -119,7 +107,7 @@ class AdminProductController extends Controller
             'description_en'       => 'nullable|string',
             'short_description_fa' => 'nullable|string|max:500',
             'short_description_en' => 'nullable|string|max:500',
-            'main_image'           => 'nullable|image|max:2048',
+            'main_image'           => 'nullable|image|mimes:jpeg,png,webp,gif|max:2048',
             'meta_title'           => 'nullable|string|max:255',
             'meta_description'     => 'nullable|string|max:500',
         ]);
@@ -169,7 +157,6 @@ class AdminProductController extends Controller
 
     public function destroy($id)
     {
-        if ($r = $this->checkAuth()) return $r;
         $product = Product::findOrFail($id);
         if ($product->main_image) Storage::disk('public')->delete($product->main_image);
         foreach ($product->images as $img) {
@@ -181,8 +168,7 @@ class AdminProductController extends Controller
 
     public function uploadImage(Request $request, $id)
     {
-        if ($r = $this->checkAuth()) return $r;
-        $request->validate(['image' => 'required|image|max:2048']);
+        $request->validate(['image' => 'required|image|mimes:jpeg,png,webp,gif|max:2048']);
         $path = $request->file('image')->store('products', 'public');
         ProductImage::create(['product_id' => $id, 'image' => $path]);
         return back()->with('success', 'تصویر آپلود شد');
@@ -190,7 +176,6 @@ class AdminProductController extends Controller
 
     public function deleteImage($imageId)
     {
-        if ($r = $this->checkAuth()) return $r;
         $image = ProductImage::findOrFail($imageId);
         Storage::disk('public')->delete($image->image);
         $image->delete();

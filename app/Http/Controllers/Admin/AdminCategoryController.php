@@ -9,29 +9,20 @@ use Illuminate\Support\Str;
 
 class AdminCategoryController extends Controller
 {
-    private function checkAuth()
-    {
-        if (!session('admin_logged_in')) return redirect()->route('admin.login');
-        return null;
-    }
-
     public function index()
     {
-        if ($r = $this->checkAuth()) return $r;
         $categories = Category::withCount('products')->orderBy('sort_order')->get();
         return view('admin.categories.index', compact('categories'));
     }
 
     public function create()
     {
-        if ($r = $this->checkAuth()) return $r;
         $parents = Category::whereNull('parent_id')->get();
         return view('admin.categories.create', compact('parents'));
     }
 
     public function store(Request $request)
     {
-        if ($r = $this->checkAuth()) return $r;
         $data = $request->validate([
             'name_fa'        => 'required|string|max:255',
             'name_en'        => 'required|string|max:255',
@@ -48,7 +39,6 @@ class AdminCategoryController extends Controller
 
     public function edit($id)
     {
-        if ($r = $this->checkAuth()) return $r;
         $category = Category::findOrFail($id);
         $parents  = Category::whereNull('parent_id')->where('id', '!=', $id)->get();
         return view('admin.categories.edit', compact('category', 'parents'));
@@ -56,7 +46,6 @@ class AdminCategoryController extends Controller
 
     public function update(Request $request, $id)
     {
-        if ($r = $this->checkAuth()) return $r;
         $category = Category::findOrFail($id);
         $data = $request->validate([
             'name_fa'        => 'required|string|max:255',
@@ -73,7 +62,6 @@ class AdminCategoryController extends Controller
 
     public function destroy($id)
     {
-        if ($r = $this->checkAuth()) return $r;
         Category::findOrFail($id)->delete();
         return redirect()->route('admin.categories.index')->with('success', 'دسته‌بندی حذف شد');
     }
