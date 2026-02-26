@@ -48,7 +48,6 @@
             </div>
         </div>
     </div>
-    <p class="text-center text-gray-500 text-xs mt-4">Made with ❤️ by <a href="https://laracopilot.com" target="_blank" class="text-green-400 hover:underline">LaraCopilot</a></p>
 </div>
 </body>
 </html>

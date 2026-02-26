@@ -59,7 +59,6 @@
     </div>
     <div class="email-footer">
         <p>این ایمیل به صورت خودکار ارسال شده است. پاسخ ندهید.</p>
-        <p>Made with ❤️ by <a href="https://laracopilot.com" style="color:#16a34a">LaraCopilot</a></p>
     </div>
 </div>
 </body>

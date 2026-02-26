@@ -212,7 +212,6 @@
     </div>
     <div class="border-t border-gray-800 py-6 text-center text-gray-500 text-sm">
         <p>© {{ date('Y') }} {{ $siteName }}. {{ $isFa ? 'تمام حقوق محفوظ است.' : 'All rights reserved.' }}</p>
-        <p class="mt-1">Made with ❤️ by <a href="https://laracopilot.com/" target="_blank" class="text-green-400 hover:underline">LaraCopilot</a></p>
     </div>
 </footer>
 
