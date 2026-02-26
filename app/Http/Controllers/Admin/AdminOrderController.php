@@ -8,16 +8,8 @@ use Illuminate\Http\Request;
 
 class AdminOrderController extends Controller
 {
-    private function checkAuth()
-    {
-        if (!session('admin_logged_in')) return redirect()->route('admin.login');
-        return null;
-    }
-
     public function index(Request $request)
     {
-        if ($r = $this->checkAuth()) return $r;
-
         $query = Order::with('user')->orderBy('created_at', 'desc');
 
         if ($request->filled('status'))         $query->where('status', $request->status);
@@ -39,14 +31,12 @@ class AdminOrderController extends Controller
 
     public function show($id)
     {
-        if ($r = $this->checkAuth()) return $r;
         $order = Order::with(['items.product', 'user', 'coupon'])->findOrFail($id);
         return view('admin.orders.show', compact('order'));
     }
 
     public function updateStatus(Request $request, $id)
     {
-        if ($r = $this->checkAuth()) return $r;
         $request->validate(['status' => 'required|in:pending,processing,shipped,delivered,cancelled']);
         Order::findOrFail($id)->update(['status' => $request->status]);
         return back()->with('success', 'وضعیت سفارش بروزرسانی شد ✅');

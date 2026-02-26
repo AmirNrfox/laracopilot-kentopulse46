@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'fa' ? 'rtl' : 'ltr' }}">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'fa' ? 'rtl' : 'ltr' }}" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,17 +16,35 @@
     <meta property="og:description" content="@yield('meta_description')">
     <meta property="og:url"         content="{{ url()->current() }}">
     <meta property="og:type"        content="website">
+    @hasSection('og_image')
+    <meta property="og:image" content="@yield('og_image')">
+    @endif
+
+    {{-- Dark mode init (before page renders to avoid flash) --}}
+    <script>
+        (function() {
+            var saved = localStorage.getItem('darkMode');
+            if (saved === 'true' || (saved === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
 
     {{-- Tailwind CDN --}}
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
 
-    {{-- Custom CSS (all extracted inline styles) --}}
+    {{-- Custom CSS --}}
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 
-    {{-- Alpine.js for interactive components --}}
+    {{-- Alpine.js --}}
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    {{-- Google Analytics (if configured) --}}
+    {{-- Google Analytics --}}
     @php $gaId = \App\Models\Setting::get('google_analytics_id'); @endphp
     @if($gaId)
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
@@ -41,7 +59,7 @@
     {{-- Schema Markup slot --}}
     @yield('schema_markup')
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col transition-colors duration-200">
 
 {{-- ── Navigation ──────────────────────────────────────────────────────────── --}}
 @php
@@ -50,12 +68,12 @@
     $wNumber    = \App\Models\Setting::get('whatsapp_number', '989123456789');
     $pEnabled   = \App\Models\Setting::get('payment_enabled', '1');
 @endphp
-<nav class="bg-white border-b shadow-sm sticky top-0 z-50">
+<nav class="bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-sm sticky top-0 z-50 transition-colors duration-200">
     <div class="max-w-7xl mx-auto px-4">
         <div class="flex items-center justify-between h-16">
 
             {{-- Logo --}}
-            <a href="{{ route('home') }}" class="flex items-center gap-2 font-black text-xl text-green-700">
+            <a href="{{ route('home') }}" class="flex items-center gap-2 font-black text-xl text-green-700 dark:text-green-400">
                 <span class="text-2xl">💪</span>
                 <span class="hidden sm:inline">{{ $siteName }}</span>
             </a>
@@ -66,10 +84,17 @@
             </div>
 
             {{-- Right actions --}}
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 sm:gap-3">
+                {{-- Dark mode toggle --}}
+                <button onclick="toggleDarkMode()" title="{{ $isFa ? 'تغییر پوسته' : 'Toggle theme' }}"
+                        class="w-9 h-9 rounded-xl border border-gray-200 dark:border-gray-600 flex items-center justify-center hover:border-green-400 transition-colors dark:text-gray-300"
+                        id="dark-toggle">
+                    <span id="dark-icon">🌙</span>
+                </button>
+
                 {{-- Language switcher --}}
                 <a href="{{ route('lang.switch', $isFa ? 'en' : 'fa') }}"
-                   class="text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200 hover:border-green-400 hover:text-green-700 transition-colors">
+                   class="text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-green-400 hover:text-green-700 dark:text-gray-300 dark:hover:text-green-400 transition-colors">
                     {{ $isFa ? 'EN' : 'FA' }}
                 </a>
 
@@ -79,11 +104,16 @@
                     💬 {{ $isFa ? 'مشاوره' : 'Consult' }}
                 </a>
 
-                {{-- Cart --}}
-                <a href="{{ route('cart.index') }}" class="relative">
-                    <span class="text-2xl">🛒</span>
-                    @livewire('cart-counter')
+                {{-- Wishlist --}}
+                <a href="{{ route('wishlist.index') }}" title="{{ $isFa ? 'علاقه‌مندی‌ها' : 'Wishlist' }}"
+                   class="relative w-9 h-9 flex items-center justify-center text-gray-500 dark:text-gray-300 hover:text-red-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                    </svg>
                 </a>
+
+                {{-- Cart --}}
+                @livewire('cart-counter')
 
                 {{-- User menu --}}
                 @auth
@@ -93,18 +123,19 @@
                         {{ mb_substr(Auth::user()->name, 0, 1) }}
                     </button>
                     <div x-show="open" @click.outside="open = false" x-transition
-                         class="absolute {{ $isFa ? 'left' : 'right' }}-0 mt-2 w-44 bg-white rounded-2xl shadow-xl border py-2 z-50">
-                        <a href="{{ route('profile') }}" class="block px-4 py-2 text-sm hover:bg-gray-50">👤 {{ $isFa ? 'پروفایل' : 'Profile' }}</a>
-                        <a href="{{ route('orders.my') }}" class="block px-4 py-2 text-sm hover:bg-gray-50">📦 {{ $isFa ? 'سفارشات' : 'Orders' }}</a>
-                        <hr class="my-1">
+                         class="absolute {{ $isFa ? 'left' : 'right' }}-0 mt-2 w-44 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border dark:border-gray-700 py-2 z-50">
+                        <a href="{{ route('profile') }}" class="block px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-200">👤 {{ $isFa ? 'پروفایل' : 'Profile' }}</a>
+                        <a href="{{ route('orders.my') }}" class="block px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-200">📦 {{ $isFa ? 'سفارشات' : 'Orders' }}</a>
+                        <a href="{{ route('wishlist.index') }}" class="block px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-200">❤️ {{ $isFa ? 'علاقه‌مندی‌ها' : 'Wishlist' }}</a>
+                        <hr class="my-1 dark:border-gray-700">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button class="w-full text-right px-4 py-2 text-sm text-red-500 hover:bg-red-50">🚪 {{ $isFa ? 'خروج' : 'Logout' }}</button>
+                            <button class="w-full text-{{ $isFa ? 'right' : 'left' }} px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">🚪 {{ $isFa ? 'خروج' : 'Logout' }}</button>
                         </form>
                     </div>
                 </div>
                 @else
-                <a href="{{ route('login') }}" class="text-sm font-bold text-green-700 hover:underline">
+                <a href="{{ route('login') }}" class="text-sm font-bold text-green-700 dark:text-green-400 hover:underline">
                     {{ $isFa ? 'ورود' : 'Login' }}
                 </a>
                 @endauth
@@ -115,13 +146,17 @@
 
 {{-- Flash messages --}}
 @if(session('success'))
-<div class="bg-green-50 border-b border-green-200 text-green-700 text-sm px-4 py-2 text-center">
-    ✅ {{ session('success') }}
+<div x-data="{ show: true }" x-show="show" x-transition
+     class="bg-green-50 dark:bg-green-900/30 border-b border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 text-sm px-4 py-2.5 flex items-center justify-between">
+    <span>✅ {{ session('success') }}</span>
+    <button @click="show = false" class="opacity-50 hover:opacity-100 text-lg leading-none">×</button>
 </div>
 @endif
 @if(session('error'))
-<div class="bg-red-50 border-b border-red-200 text-red-700 text-sm px-4 py-2 text-center">
-    ❌ {{ session('error') }}
+<div x-data="{ show: true }" x-show="show" x-transition
+     class="bg-red-50 dark:bg-red-900/30 border-b border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm px-4 py-2.5 flex items-center justify-between">
+    <span>❌ {{ session('error') }}</span>
+    <button @click="show = false" class="opacity-50 hover:opacity-100 text-lg leading-none">×</button>
 </div>
 @endif
 
@@ -151,10 +186,11 @@
         <div>
             <h4 class="font-black mb-4 text-green-400">{{ $isFa ? 'دسترسی سریع' : 'Quick Links' }}</h4>
             <div class="space-y-2 text-sm text-gray-400">
-                <a href="{{ route('home') }}" class="block hover:text-white">{{ $isFa ? 'صفحه اصلی' : 'Home' }}</a>
-                <a href="{{ route('products.index') }}" class="block hover:text-white">{{ $isFa ? 'محصولات' : 'Products' }}</a>
-                <a href="{{ route('cart.index') }}" class="block hover:text-white">{{ $isFa ? 'سبد خرید' : 'Cart' }}</a>
-                @guest <a href="{{ route('login') }}" class="block hover:text-white">{{ $isFa ? 'ورود' : 'Login' }}</a>@endguest
+                <a href="{{ route('home') }}" class="block hover:text-white transition-colors">{{ $isFa ? 'صفحه اصلی' : 'Home' }}</a>
+                <a href="{{ route('products.index') }}" class="block hover:text-white transition-colors">{{ $isFa ? 'محصولات' : 'Products' }}</a>
+                <a href="{{ route('wishlist.index') }}" class="block hover:text-white transition-colors">{{ $isFa ? 'علاقه‌مندی‌ها' : 'Wishlist' }}</a>
+                <a href="{{ route('cart.index') }}" class="block hover:text-white transition-colors">{{ $isFa ? 'سبد خرید' : 'Cart' }}</a>
+                @guest <a href="{{ route('login') }}" class="block hover:text-white transition-colors">{{ $isFa ? 'ورود' : 'Login' }}</a>@endguest
             </div>
         </div>
         <div>
@@ -182,5 +218,20 @@
 
 @livewireScripts
 @yield('scripts')
+
+<script>
+function toggleDarkMode() {
+    var html = document.documentElement;
+    html.classList.toggle('dark');
+    var isDark = html.classList.contains('dark');
+    localStorage.setItem('darkMode', isDark);
+    document.getElementById('dark-icon').textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function() {
+    var isDark = document.documentElement.classList.contains('dark');
+    var icon = document.getElementById('dark-icon');
+    if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+});
+</script>
 </body>
 </html>

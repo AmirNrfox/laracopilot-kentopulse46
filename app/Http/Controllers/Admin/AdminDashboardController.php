@@ -12,8 +12,6 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
-        if (!session('admin_logged_in')) return redirect()->route('admin.login');
-
         $totalOrders   = Order::count();
         $totalRevenue  = Order::where('payment_status', 'paid')->sum('total');
         $totalProducts = Product::count();
@@ -23,7 +21,6 @@ class AdminDashboardController extends Controller
         $recentOrders  = Order::with('user')->orderBy('created_at', 'desc')->take(10)->get();
         $topProducts   = Product::withCount('orderItems')->orderBy('order_items_count', 'desc')->take(5)->get();
 
-        // SQLite-compatible: strftime instead of DATE_FORMAT
         $monthlyRevenue = Order::where('payment_status', 'paid')
             ->selectRaw("strftime('%Y-%m', created_at) as month, SUM(total) as revenue, COUNT(*) as count")
             ->groupBy('month')

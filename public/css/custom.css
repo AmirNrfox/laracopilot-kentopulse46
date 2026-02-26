@@ -11,12 +11,12 @@ body {
     font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
 }
 
-/* ── Brand Gradients ─────────────────────────────────────────────────────────
-   Replace: style="background:linear-gradient(135deg,#0f2027 0%,#1a4731 50%,#0f2027 100%)"
-            style="background:linear-gradient(135deg,#1da851,#25D366)"
-            style="background:linear-gradient(to right,#4ade80,#22d3ee)"
-            style="background:#25D366"
-────────────────────────────────────────────────────────────────────────────── */
+/* ── Dark Mode Base Colors ───────────────────────────────────────────────────── */
+.dark body {
+    color: #f3f4f6;
+}
+
+/* ── Brand Gradients ─────────────────────────────────────────────────────────── */
 .bg-hero {
     background: linear-gradient(135deg, #0f2027 0%, #1a4731 50%, #0f2027 100%);
 }
@@ -36,32 +36,17 @@ body {
     background-clip: text;
 }
 
-/* ── Admin Layout ────────────────────────────────────────────────────────────
-   Replace: style="background:linear-gradient(135deg,#0f2027,#1a4731)"
-────────────────────────────────────────────────────────────────────────────── */
+/* ── Admin Layout ────────────────────────────────────────────────────────────── */
 .bg-admin-sidebar {
     background: linear-gradient(135deg, #0f2027, #1a4731);
 }
 
-/* ── Admin Login Header ──────────────────────────────────────────────────────
-   Replace: style="background-image: linear-gradient(to right, ...)"
-────────────────────────────────────────────────────────────────────────────── */
+/* ── Admin Login Header ──────────────────────────────────────────────────────── */
 .bg-admin-header {
     background: linear-gradient(to right, #15803d, #14532d);
 }
 
-/* ── Product card hero blur circles ─────────────────────────────────────────
-   Replace: style="background:linear-gradient(to right,#4ade80,#22d3ee)" on circle divs
-────────────────────────────────────────────────────────────────────────────── */
-.blur-circle-green {
-    background: rgba(74, 222, 128, 0.2);
-}
-
-.blur-circle-cyan {
-    background: rgba(34, 211, 238, 0.2);
-}
-
-/* ── Hero decorative circles (product show page) ─────────────────────────── */
+/* ── Hero decorative circles ─────────────────────────────────────────────────── */
 .hero-circle-outer {
     background: linear-gradient(135deg, rgba(74,222,128,0.2), rgba(34,211,238,0.2));
     border: 1px solid rgba(74,222,128,0.3);
@@ -72,36 +57,38 @@ body {
     border: 1px solid rgba(74,222,128,0.2);
 }
 
-/* ── WhatsApp Button ─────────────────────────────────────────────────────────
-   Replace: style="background:#25D366" on anchor/button elements
-────────────────────────────────────────────────────────────────────────────── */
+/* ── WhatsApp Buttons ────────────────────────────────────────────────────────── */
 .btn-whatsapp {
     background: #25D366;
     color: #ffffff;
-    transition: background 0.2s ease;
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 .btn-whatsapp:hover {
     background: #1ebe5d;
+    transform: translateY(-1px);
 }
 
 .btn-whatsapp-lg {
     background: linear-gradient(135deg, #1da851, #25D366);
     color: #ffffff;
-    transition: transform 0.2s ease, background 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .btn-whatsapp-lg:hover {
-    background: linear-gradient(135deg, #1a9648, #1ebe5d);
-    transform: scale(1.05);
+    transform: scale(1.03);
+    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4);
 }
 
-/* ── User avatar gradient ────────────────────────────────────────────────────
-   Replace: style="background:linear-gradient(to bottom right, #4ade80, #06b6d4)"
-────────────────────────────────────────────────────────────────────────────── */
+/* ── User avatar gradient ────────────────────────────────────────────────────── */
 .avatar-gradient {
     background: linear-gradient(135deg, #4ade80, #06b6d4);
 }
 
-/* ── Scrollbar (nice thin scrollbar for admin sidebar) ───────────────────── */
+/* ── Product Card Animations ─────────────────────────────────────────────────── */
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* ── Scrollbar (admin sidebar) ───────────────────────────────────────────────── */
 .admin-sidebar-scroll {
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.2) transparent;
@@ -110,9 +97,7 @@ body {
 .admin-sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
 .admin-sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
 
-/* ── Email template (not Tailwind-based, standalone) ────────────────────────
-   These only apply inside emails/order_placed.blade.php
-────────────────────────────────────────────────────────────────────────────── */
+/* ── Email template ──────────────────────────────────────────────────────────── */
 .email-wrap {
     font-family: Tahoma, Arial, sans-serif;
     background: #f8fafc;
@@ -182,12 +167,7 @@ body {
     font-size: 12px;
 }
 
-/* ── Dynamic width helper (used where CSS variable approach is needed) ───── */
-[data-width] {
-    width: attr(data-width);
-}
-
-/* ── Line clamp utilities (not in older Tailwind CDN) ───────────────────── */
+/* ── Line clamp utilities ─────────────────────────────────────────────────────── */
 .line-clamp-1 {
     overflow: hidden;
     display: -webkit-box;
@@ -207,6 +187,34 @@ body {
     -webkit-box-orient: vertical;
 }
 
-/* ── RTL / LTR input helpers ─────────────────────────────────────────────── */
+/* ── RTL / LTR input helpers ─────────────────────────────────────────────────── */
 .input-ltr { direction: ltr; }
 .input-rtl { direction: rtl; }
+
+/* ── Dark mode prose ─────────────────────────────────────────────────────────── */
+.dark .prose {
+    color: #d1d5db;
+}
+.dark .prose strong {
+    color: #f9fafb;
+}
+
+/* ── Smooth page transitions ─────────────────────────────────────────────────── */
+main {
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Focus ring improvements ─────────────────────────────────────────────────── */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid #16a34a;
+    outline-offset: 2px;
+}

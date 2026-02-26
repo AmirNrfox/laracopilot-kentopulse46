@@ -24,9 +24,6 @@ class AdminReviews extends Component
 
     public function render()
     {
-        if (!session('admin_logged_in')) {
-            return redirect()->route('admin.login');
-        }
         $reviews = Review::with(['product', 'user'])
             ->when($this->filter === 'pending', fn($q) => $q->where('approved', false))
             ->when($this->filter === 'approved', fn($q) => $q->where('approved', true))
