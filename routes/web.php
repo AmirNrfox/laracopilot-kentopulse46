@@ -34,18 +34,22 @@ Route::get('/products/{slug}', [ProductController::class, 'show'])->name('produc
 Route::get('/category/{slug}', [ProductController::class, 'category'])->name('category.show');
 Route::get('/search', [ProductController::class, 'search'])->name('products.search');
 
-// ── Auth ─────────────────────────────────────────────────────────────────────
+// ── Auth (guest) ─────────────────────────────────────────────────────────────
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
-Route::post('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
 
-// ── User Orders ───────────────────────────────────────────────────────────────
-Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.my');
-Route::get('/my-orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+// ── Auth (protected) ─────────────────────────────────────────────────────────
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::post('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+
+    // ── User Orders ───────────────────────────────────────────────────────────
+    Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.my');
+    Route::get('/my-orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+});
 
 // ── Cart ──────────────────────────────────────────────────────────────────────
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -66,12 +70,14 @@ Route::get('/payment/callback', [PaymentController::class, 'callback'])->name('p
 Route::get('/payment/success/{order}', [PaymentController::class, 'success'])->name('payment.success');
 Route::get('/payment/failed', [PaymentController::class, 'failed'])->name('payment.failed');
 
-// ── Reviews ───────────────────────────────────────────────────────────────────
-Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+// ── Reviews (auth required) ──────────────────────────────────────────────────
+Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store')->middleware('auth');
 
-// ── Wishlist ──────────────────────────────────────────────────────────────────
-Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
-Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+// ── Wishlist (auth required) ─────────────────────────────────────────────────
+Route::middleware('auth')->group(function () {
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+});
 
 // ── Admin Auth ────────────────────────────────────────────────────────────────
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');

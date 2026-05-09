@@ -63,7 +63,6 @@ class AuthController extends Controller
             'email'    => $request->email,
             'password' => Hash::make($request->password),
             'phone'    => $request->phone,
-            'role'     => 'user',
         ]);
 
         Auth::login($user);
@@ -80,13 +79,11 @@ class AuthController extends Controller
 
     public function profile()
     {
-        if (!Auth::check()) return redirect()->route('login');
         return view('auth.profile', ['user' => Auth::user()]);
     }
 
     public function updateProfile(Request $request)
     {
-        if (!Auth::check()) return redirect()->route('login');
         $fa   = app()->getLocale() === 'fa';
         $user = Auth::user();
 

@@ -8,6 +8,7 @@ use App\Models\Coupon;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
@@ -124,7 +125,13 @@ class CheckoutController extends Controller
                 $m->to($order->email)
                   ->subject(($order->payment_method === 'whatsapp' ? 'سفارش ثبت شد - ' : 'Order Placed - ') . $order->order_number);
             });
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+            Log::error('Failed to send order email', [
+                'order_id' => $order->id,
+                'email'    => $order->email,
+                'error'    => $e->getMessage(),
+            ]);
+        }
 
         if ($request->get('payment_method') === 'whatsapp') {
             return redirect()->route('checkout.whatsapp');
